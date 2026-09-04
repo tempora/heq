@@ -1,6 +1,8 @@
 bin/
 obj/
 dist/
+result
+result-*
 .vs/
 .idea/
 .claude/
@@ -8,3 +10,4 @@ dist/
 *.suo
 TODO.md
 .editorconfig
+target/
