@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["heq-core"]
+members = ["heq-core", "heq-app"]
 
 [workspace.package]
 version = "1.0.0"

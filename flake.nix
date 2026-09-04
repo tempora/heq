@@ -26,26 +26,46 @@
           default = { type = "app"; program = "${run}/bin/heq"; };
         });
 
-      devShells = forAllSystems (pkgs: {
-        default = pkgs.mkShell {
-          packages = [
-            pkgs.dotnet-sdk_10
-            pkgs.cargo
-            pkgs.rustc
-            pkgs.rustfmt
-            pkgs.clippy
-            pkgs.rust-analyzer
-          ] ++ pkgs.lib.optional pkgs.stdenv.hostPlatform.isLinux pkgs.wineWow64Packages.stable;
+      devShells = forAllSystems (pkgs:
+        let
+          # winit/glow link against these, and eframe dlopens libGL at run time
+          guiLibs = with pkgs; [
+            libxkbcommon
+            libGL
+            wayland
+            fontconfig
+            xorg.libX11
+            xorg.libXcursor
+            xorg.libXi
+            xorg.libXrandr
+          ];
+        in
+        {
+          default = pkgs.mkShell {
+            packages = [
+              pkgs.dotnet-sdk_10
+              pkgs.cargo
+              pkgs.rustc
+              pkgs.rustfmt
+              pkgs.clippy
+              pkgs.rust-analyzer
+              pkgs.pkg-config
+            ]
+            ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux
+              (guiLibs ++ [ pkgs.wineWow64Packages.stable ]);
 
-          # Building net10.0-windows off Windows needs the ref packs fetched explicitly.
-          env = {
-            DOTNET_ROOT = "${pkgs.dotnet-sdk_10}";
-            DOTNET_CLI_TELEMETRY_OPTOUT = "1";
-            DOTNET_NOLOGO = "1";
-            EnableWindowsTargeting = "true";
+            LD_LIBRARY_PATH = pkgs.lib.optionalString pkgs.stdenv.hostPlatform.isLinux
+              (pkgs.lib.makeLibraryPath guiLibs);
+
+            # Building net10.0-windows off Windows needs the ref packs fetched explicitly.
+            env = {
+              DOTNET_ROOT = "${pkgs.dotnet-sdk_10}";
+              DOTNET_CLI_TELEMETRY_OPTOUT = "1";
+              DOTNET_NOLOGO = "1";
+              EnableWindowsTargeting = "true";
+            };
           };
-        };
-      });
+        });
 
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
     };

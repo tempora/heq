@@ -1,0 +1,13 @@
+[package]
+name = "heq-app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "heq"
+path = "src/main.rs"
+
+[dependencies]
+eframe = "0.36.1"
+heq-core = { path = "../heq-core" }

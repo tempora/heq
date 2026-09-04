@@ -1,12 +1,16 @@
 pub mod apo;
 pub mod camilla;
+pub mod null;
 pub mod pipewire;
+pub mod platform;
 pub mod snapshot;
 pub mod worker;
 pub mod yaml;
 
 pub use apo::ApoBackend;
 pub use camilla::CamillaBackend;
+pub use null::NullBackend;
+pub use platform::{default_backend, BackendKind, SUPPORTED};
 pub use pipewire::PipeWireBackend;
 pub use snapshot::Snapshot;
 pub use worker::BackendWorker;
