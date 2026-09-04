@@ -1,5 +1,7 @@
 use std::f64::consts::PI;
 
+use serde::{Deserialize, Serialize};
+
 use crate::dsp::{butterworth_qs, Biquad};
 
 pub const MIN_FREQ: f64 = 10.0;
@@ -8,7 +10,8 @@ pub const MIN_Q: f64 = 0.025;
 pub const MAX_Q: f64 = 40.0;
 pub const MAX_GAIN: f64 = 30.0;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+// variant names are the on-disk spelling the C# app writes; do not rename them
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum FilterKind {
     Bell,
     LowShelf,
@@ -57,7 +60,7 @@ impl FilterKind {
     }
 }
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ChannelTarget {
     #[default]
     Both,
